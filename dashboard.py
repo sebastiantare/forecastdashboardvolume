@@ -8,6 +8,8 @@ from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
+import os
+
 # Suppress warnings
 import warnings
 warnings.filterwarnings("ignore")
@@ -116,7 +118,17 @@ def export_to_csv(df1, df2, df3, filename='output_file.xlsx'):
         df1.to_excel(writer, sheet_name='Forecast', index=0)
         df2.to_excel(writer, sheet_name='Seasonality', index=0)
         df3.to_excel(writer, sheet_name='Growth', index=0)
-    st.success(f'Data exported to {filename}')
+    st.success(f'Data exported to {filename}.')
+
+    # Get the file name and mimetype
+    file_name = os.path.basename('./' + filename)
+
+    # Create the download button
+    st.download_button(
+        label="Click to Download File",
+        data=open('./'+filename, "rb").read(),
+        file_name=file_name,
+    )
 
 # Streamlit UI
 with tab1:
@@ -309,6 +321,7 @@ with tab1:
         # Add a button to trigger the export
         if st.button('Export All Tasks Forecast to CSV'):
             export_to_csv(final_df, edited_seasonal_data, gr_df.reset_index())
+
 with tab2:
     """
     **Growth**
